@@ -4,7 +4,7 @@ const { body, validationResult } = require("express-validator");
 const Category = require("../models/category.model");
 const Item = require("../models/item.model");
 
-exports.GETindex = (req, res, next) => {
+exports.get_index = (req, res, next) => {
   async.parallel(
     // Get: {categoryCount, itemCount, itemInStockCount}
     {
@@ -31,21 +31,7 @@ exports.GETindex = (req, res, next) => {
   );
 };
 
-exports.categories = (req, res) => {
-  async.parallel(
-    {
-      categories(callback) {
-        Category.find({}, callback);
-      },
-    },
-
-    (err, results) => {
-      if (err) throw new Error(err);
-    }
-  );
-};
-
-exports.GETnewItemForm = (req, res, next) => {
+exports.get_newItemForm = (req, res, next) => {
   // Find Category list for drop down (select)
   async.parallel(
     {
@@ -65,13 +51,8 @@ exports.GETnewItemForm = (req, res, next) => {
   );
 };
 
-// exports.POSTnewItemForm = (req, res, next) => {
-//   res.send("NOT IMPLEMENTED");
-// };
-
 const alphaErrorMessage = "Only A-Z, Space, and Dash characters are allowed";
-
-exports.POSTnewItemForm = [
+exports.post_newItemForm = [
   // Generate an array with all the form data in it
   body("name")
     .trim()
@@ -106,7 +87,7 @@ exports.POSTnewItemForm = [
     const errors = validationResult(req);
 
     // build an object with the form data
-    const item = {
+    const itemData = {
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,
@@ -117,27 +98,64 @@ exports.POSTnewItemForm = [
     if (!errors.isEmpty()) {
       // Errors in the form data were found
       // Re-render the form
-      async.parallel(
-        {
-          categories(callback) {
-            Category.find({}, callback);
-          },
+      async.parallel({
+        categories(callback) {
+          Category.find({}, callback);
         },
+      },
 
-        (err, results) => {
-          if (err) return next(err);
-          res.render("newItem", {
-            title: "New Item",
-            item,
-            categories: results.categories,
-            errors: errors.array(),
-          });
-        }
-      );
+      (err, results) => {
+        // reload form and show the first error
+        if (err) return next(err);
+        res.render("newItem", {
+          title: "New Item",
+          item: itemData,
+          categories: results.categories,
+          errors: errors.array(),
+        });
+      });
+      return;
     }
+
+    // Form data is valid
+    const item = new Item(itemData);        
+    item.save((err) => {
+      if(err) return next(err);
+      res.redirect(item.url);
+    })
   },
 ];
 
-exports.GETitem = (req, res, next) => {
+exports.get_items = (req, res, next) => {
   res.send("NOT IMPLEMENTED");
+}
+
+
+exports.get_item = (req, res, next) => {
+  async.parallel({
+    item(callback) {
+      if(!req.params.itemId) {
+        console.log("FAIL");
+        return next();
+      }
+      console.log("SUCCESS");
+      Item.find({_id: req.params.itemId}, callback);
+    }
+  }),
+  (err, results) => {
+    console.log("hmm");
+
+    if(err) {
+      console.log("errror...");
+      throw new Error(err)
+    }
+    res.render("item", {
+      title: `Item (${results.item._id})`,
+      item: results.item,
+      errors: err
+    })
+  }
+
+  console.log(`${req.params.itemId}`);
+  return;
 };

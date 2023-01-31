@@ -8,10 +8,11 @@ const itemController = require("../controllers/item.controller");
 //   res.render("index", { title: "Grantiques" });
 // });
 
-router.get("/", itemController.GETindex);
+router.get("/", itemController.get_index);
 
-router.get("/item/new", itemController.GETnewItemForm);
-router.post("/item/new", itemController.POSTnewItemForm);
-router.get("/item", itemController.GETitem);
+router.get("/item/new", itemController.get_newItemForm);
+router.post("/item/new", itemController.post_newItemForm);
+router.get("/item", itemController.get_items);
+router.get("/item/:itemId", itemController.get_item);
 
 module.exports = router;
