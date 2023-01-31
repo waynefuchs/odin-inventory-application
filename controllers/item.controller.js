@@ -13,7 +13,7 @@ exports.index = (req, res, next) => {
         Item.countDocuments({}, callback);
       },
       itemInStockCount(callback) {
-        Item.countDocuments({ available: { $gt: 0 } });
+        Item.countDocuments({ available: { $gt: 0 } }, callback);
       },
     },
 
