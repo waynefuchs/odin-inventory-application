@@ -1,0 +1,48 @@
+extends layout
+
+
+
+//- _id: 63d8905dbe790f19cea221a4
+//- name: "Camel"
+//- description: "A hand carved wooden camel from Egypt circa 1950"
+//- category: "1"
+//- price: 5999
+//- available: 1
+
+block content
+  h1 #{title}
+
+  if errors
+    ul.error
+      for error in errors
+        li!= error.msg
+
+  form(method="post", action="")
+    div.input
+      label(for="name") Item Name
+      input(type="text", name="name", id="name", placeholder="Item Name", maxlength=60, required=true, value=undefined===item ? '' : item.name)
+
+    div.input
+      label(for="description") Description
+      input(type="text", name="description", id="description", placeholder="Item Description", maxlength=60, required=true, value=undefined===item ? '' : item.description)
+
+    div.input
+      label(for="category") Category
+      select(name="category" id="category")
+        each category in categories
+          if undefined!==item
+            option(selected=category.name === item.category) #{category.name}
+          else
+            option #{category.name}
+
+    div.input
+      label(for="price") Price
+      span.price
+        input(type="text" name="price" placeholder="0.00", maxlength=60, required=true, value=undefined===item ? '' : item.price)
+    
+    div.input
+      label(for="available") Quantity Available
+      input(type="number" name="available" placeholder="0" min="0" max="9999", maxlength=4, required=true, value=undefined===item ? '' : item.available)
+
+    div.input
+      button Add Item

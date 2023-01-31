@@ -2,8 +2,8 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  h3 Welcome to #{title}
 
-  p= data.categoryCount
-  p= data.itemCount 
-  p= data.itemInStockCount
+  p Categories: #{data.categoryCount}
+  p Items: #{data.itemCount}
+  p Items in Stock: #{data.itemInStockCount}
