@@ -155,7 +155,10 @@ exports.get_item = (req, res, next) => {
       },
     },
     (err, results) => {
-      if (err) return next(err);
+      if (err) {
+        console.dir(item);
+        return next(err);
+      }
       res.render("item", {
         title: `Item`,
         item: results.item,
