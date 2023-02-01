@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h1= title
+    a.button(href="/") Home
+    a.button(href="/items/new") New
+
+  each item in items
+    div.items
+      div.item #{item.name}
+      div.item #{item.description}
+      div.item #{item.category}
+      div.item #{item.price}
+      div.item #{item.available}
+
+      a.button(href=item.urlDelete) Delete

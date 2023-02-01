@@ -4,6 +4,14 @@ block content
   h1= title
   h3 Welcome to #{title}
 
-  p Categories: #{data.categoryCount}
-  p Items: #{data.itemCount}
-  p Items in Stock: #{data.itemInStockCount}
+  nav
+    a(href="/") Home
+    a(href="/categories") Categories
+    a(href="/items") Items
+
+  div
+    h1 Grantiques
+    p Soon to be a lego shop, but anyway!
+    p Our current inventory includes
+    a(href="/categories") #{data.categoryCount} Categories
+    a(href="/items") #{data.itemCount} Items

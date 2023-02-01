@@ -10,7 +10,11 @@ const ItemSchema = new Schema({
 });
 
 ItemSchema.virtual("url").get(function () {
-  return `/catalog/item/${this._id}`;
+  return `/items/${this._id}`;
+});
+
+ItemSchema.virtual("urlDelete").get(function () {
+  return `/items/${this._id}/delete`;
 });
 
 module.exports = mongoose.model("Item", ItemSchema);

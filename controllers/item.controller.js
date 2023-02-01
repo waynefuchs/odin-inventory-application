@@ -98,64 +98,106 @@ exports.post_newItemForm = [
     if (!errors.isEmpty()) {
       // Errors in the form data were found
       // Re-render the form
-      async.parallel({
-        categories(callback) {
-          Category.find({}, callback);
+      async.parallel(
+        {
+          categories(callback) {
+            Category.find({}, callback);
+          },
         },
-      },
 
-      (err, results) => {
-        // reload form and show the first error
-        if (err) return next(err);
-        res.render("newItem", {
-          title: "New Item",
-          item: itemData,
-          categories: results.categories,
-          errors: errors.array(),
-        });
-      });
+        (err, results) => {
+          // reload form and show the first error
+          if (err) return next(err);
+          res.render("newItem", {
+            title: "New Item",
+            item: itemData,
+            categories: results.categories,
+            errors: errors.array(),
+          });
+        }
+      );
       return;
     }
 
     // Form data is valid
-    const item = new Item(itemData);        
+    const item = new Item(itemData);
     item.save((err) => {
-      if(err) return next(err);
+      if (err) return next(err);
       res.redirect(item.url);
-    })
+    });
   },
 ];
 
 exports.get_items = (req, res, next) => {
-  res.send("NOT IMPLEMENTED");
-}
-
+  async.parallel(
+    {
+      items(callback) {
+        Item.find({}, callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      res.render("items", {
+        title: "Items",
+        items: results.items,
+        errors: err,
+      });
+    }
+  );
+};
 
 exports.get_item = (req, res, next) => {
-  async.parallel({
-    item(callback) {
-      if(!req.params.itemId) {
-        console.log("FAIL");
-        return next();
-      }
-      console.log("SUCCESS");
-      Item.find({_id: req.params.itemId}, callback);
+  async.parallel(
+    {
+      item(callback) {
+        // if (!req.params.itemId) return next();
+        Item.findById(req.params.itemId, callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      res.render("item", {
+        title: `Item`,
+        item: results.item,
+        errors: err,
+      });
     }
-  }),
-  (err, results) => {
-    console.log("hmm");
+  );
+};
 
-    if(err) {
-      console.log("errror...");
-      throw new Error(err)
+exports.get_deleteItem = (req, res, next) => {
+  async.parallel(
+    {
+      item(callback) {
+        // if (!req.params.itemId) return next();
+        Item.findById(req.params.itemId, callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      res.render("deleteItem", {
+        title: `Item`,
+        item: results.item,
+        errors: err,
+      });
     }
-    res.render("item", {
-      title: `Item (${results.item._id})`,
-      item: results.item,
-      errors: err
-    })
-  }
+  );
+};
 
-  console.log(`${req.params.itemId}`);
-  return;
+exports.post_deleteItem = (req, res, next) => {
+  console.log(req.params.itemId);
+  async.parallel(
+    {
+      item(callback) {
+        Item.findById(req.params.itemId, callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      Item.findByIdAndDelete(req.params.itemId, (err) => {
+        if (err) return next(err);
+        res.redirect("/items");
+      });
+    }
+  );
 };
