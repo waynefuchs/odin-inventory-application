@@ -2,10 +2,13 @@ extends layout
 
 block content
   h1= title
-    a.button(href="/items") Back
+    nav
+      a(href="/") Home
+      a(href="/items") Back
+
 
   p #{item.name}
   p #{item.description}
   p #{item.category}
   p #{item.price}
-  p #{item.available}
+  p Quantity: #{item.available}

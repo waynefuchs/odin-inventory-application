@@ -13,6 +13,16 @@ body {
   font: 14px "ScopeOne", serif;
 }
 
+nav {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+nav > a {
+  text-decoration: none;
+}
+
 a {
   color: #00b7ff;
 }
@@ -62,8 +72,29 @@ span {
 }
 
 ul {
+  list-style-type: none;
+}
+
+.error,
+ul.error {
   background: #ccaaaa;
   padding: 1rem;
   border-radius: 0.5rem;
-  list-style-type: none;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: 3fr 6fr 2fr 1fr 2fr 1fr;
+  justify-items: start;
+  margin-top: 1rem;
+}
+
+.category-card {
+  display: flex;
+  gap: 3rem;
+  margin-top: 1rem;
+}
+
+.category {
+  min-width: 50%;
 }

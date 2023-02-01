@@ -1,16 +1,10 @@
 extends layout
 
-
-
-//- _id: 63d8905dbe790f19cea221a4
-//- name: "Camel"
-//- description: "A hand carved wooden camel from Egypt circa 1950"
-//- category: "1"
-//- price: 5999
-//- available: 1
-
 block content
   h1 #{title}
+    nav
+      a(href="/") Home
+      a(href="/items") Items
 
   if errors
     ul.error

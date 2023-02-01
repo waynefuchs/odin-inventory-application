@@ -2,7 +2,11 @@ extends layout
 
 block content
   h1= title
-    a.button(href="/categories") Back
+    nav
+      a(href="/categories") Back
+
+  if message
+    div.error= message
 
   p #{category.name}
   p #{category.description}

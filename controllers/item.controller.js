@@ -4,34 +4,7 @@ const { body, validationResult } = require("express-validator");
 const Category = require("../models/category.model");
 const Item = require("../models/item.model");
 
-exports.get_index = (req, res, next) => {
-  async.parallel(
-    // Get: {categoryCount, itemCount, itemInStockCount}
-    {
-      categoryCount(callback) {
-        Category.countDocuments({}, callback);
-      },
-      itemCount(callback) {
-        Item.countDocuments({}, callback);
-      },
-      itemInStockCount(callback) {
-        Item.countDocuments({ available: { $gt: 0 } }, callback);
-      },
-    },
-
-    // Pass the results to the view engine
-    (err, results) => {
-      if (err) return next(err);
-      res.render("index", {
-        title: "Grantiques",
-        error: err,
-        data: results,
-      });
-    }
-  );
-};
-
-exports.get_newItemForm = (req, res, next) => {
+exports.get_itemNewForm = (req, res, next) => {
   // Find Category list for drop down (select)
   async.parallel(
     {
@@ -43,7 +16,7 @@ exports.get_newItemForm = (req, res, next) => {
     // Render page
     (err, results) => {
       if (err) return next(err);
-      res.render("newItem", {
+      res.render("itemNewForm", {
         title: "New Item",
         categories: results.categories,
       });
@@ -52,7 +25,7 @@ exports.get_newItemForm = (req, res, next) => {
 };
 
 const alphaErrorMessage = "Only A-Z, Space, and Dash characters are allowed";
-exports.post_newItemForm = [
+exports.post_itemNewForm = [
   // Generate an array with all the form data in it
   body("name")
     .trim()
@@ -84,6 +57,7 @@ exports.post_newItemForm = [
 
   // And execute this function at the end
   (req, res, next) => {
+    // Run form validation
     const errors = validationResult(req);
 
     // build an object with the form data
@@ -108,7 +82,7 @@ exports.post_newItemForm = [
         (err, results) => {
           // reload form and show the first error
           if (err) return next(err);
-          res.render("newItem", {
+          res.render("itemNewForm", {
             title: "New Item",
             item: itemData,
             categories: results.categories,
@@ -168,7 +142,7 @@ exports.get_item = (req, res, next) => {
   );
 };
 
-exports.get_deleteItem = (req, res, next) => {
+exports.get_itemDelete = (req, res, next) => {
   async.parallel(
     {
       item(callback) {
@@ -178,7 +152,7 @@ exports.get_deleteItem = (req, res, next) => {
     },
     (err, results) => {
       if (err) return next(err);
-      res.render("deleteItem", {
+      res.render("itemDelete", {
         title: `Item`,
         item: results.item,
         errors: err,
@@ -187,7 +161,7 @@ exports.get_deleteItem = (req, res, next) => {
   );
 };
 
-exports.post_deleteItem = (req, res, next) => {
+exports.post_itemDelete = (req, res, next) => {
   console.log(req.params.itemId);
   async.parallel(
     {

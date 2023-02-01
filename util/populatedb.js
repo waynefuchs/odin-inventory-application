@@ -91,7 +91,7 @@ function createItems(next) {
         itemCreate(
           "Camel",
           "A hand carved wooden camel from Egypt circa 1950",
-          1,
+          "Technology",
           5999,
           1,
           callback
@@ -101,7 +101,7 @@ function createItems(next) {
         itemCreate(
           "Maine Lighthouse",
           "A brass lighthouse",
-          1,
+          "Technology",
           6099,
           1,
           callback
@@ -111,23 +111,37 @@ function createItems(next) {
         itemCreate(
           "Common Loon",
           "A hand carved wooden loon, expertly painted",
-          1,
+          "Technology",
           9999,
           1,
           callback
         );
       },
       function (callback) {
-        itemCreate("Old Man", "Hand carved figure", 1, 6499, 1, callback);
+        itemCreate(
+          "Old Man",
+          "Hand carved figure",
+          "Technology",
+          6499,
+          1,
+          callback
+        );
       },
       function (callback) {
-        itemCreate("Sailor's Wife", "Hand carved fiture", 1, 6499, 1, callback);
+        itemCreate(
+          "Sailor's Wife",
+          "Hand carved fiture",
+          "Technology",
+          6499,
+          1,
+          callback
+        );
       },
       function (callback) {
         itemCreate(
           "Moose Paperweight",
           "A paperweight to remind you to check for moose",
-          1,
+          "Technology",
           3499,
           1,
           callback
@@ -137,7 +151,7 @@ function createItems(next) {
         itemCreate(
           "Oriental Cup",
           "A 24k gold-coated glass cup",
-          1,
+          "Technology",
           2299,
           1,
           callback
@@ -147,7 +161,7 @@ function createItems(next) {
         itemCreate(
           "Silver Teacup",
           "A teacup circa 19th century",
-          1,
+          "Technology",
           12499,
           1,
           callback
@@ -157,7 +171,7 @@ function createItems(next) {
         itemCreate(
           "Train Plate",
           "Its a plate. With a train on it.",
-          1,
+          "Technology",
           9499,
           1,
           callback
