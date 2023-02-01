@@ -21,7 +21,7 @@ exports.get_index = (req, res, next) => {
 
     // Pass the results to the view engine
     (err, results) => {
-      if (err) throw new Error(err);
+      if (err) return next(err);
       res.render("index", {
         title: "Grantiques",
         error: err,
@@ -42,7 +42,7 @@ exports.get_newItemForm = (req, res, next) => {
 
     // Render page
     (err, results) => {
-      if (err) throw new Error(err);
+      if (err) return next(err);
       res.render("newItem", {
         title: "New Item",
         categories: results.categories,

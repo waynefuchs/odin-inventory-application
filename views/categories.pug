@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+    a.button(href="/") Back
+    a.button(href="/category/new") New
+
+  each category in categories
+    div.category
+      div.category
+        a(href=category.url) #{category.name}
+      div.category #{category.description}

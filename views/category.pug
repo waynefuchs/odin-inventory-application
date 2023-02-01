@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1= title
+    a.button(href="/categories") Back
+
+  p #{category.name}
+  p #{category.description}
+  a(href=category.urlDelete) Delete

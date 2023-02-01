@@ -1,20 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-const itemController = require("../controllers/item.controller");
+const cItem = require("../controllers/item.controller");
+const cCategory = require("../controllers/category.controller");
 
-/* GET home page. */
-// router.get("/", function (req, res, next) {
-//   res.render("index", { title: "Grantiques" });
-// });
+router.get("/", cItem.get_index);
 
-router.get("/", itemController.get_index);
+// Items
+router.get("/items", cItem.get_items);
+router.get("/items/new", cItem.get_newItemForm);
+router.post("/items/new", cItem.post_newItemForm);
+router.get("/items/:itemId", cItem.get_item);
+router.get("/items/:itemId/delete", cItem.get_deleteItem);
+router.post("/items/:itemId/delete", cItem.post_deleteItem);
 
-router.get("/items/new", itemController.get_newItemForm);
-router.post("/items/new", itemController.post_newItemForm);
-router.get("/items", itemController.get_items);
-router.get("/items/:itemId", itemController.get_item);
-router.get("/items/:itemId/delete", itemController.get_deleteItem);
-router.post("/items/:itemId/delete", itemController.post_deleteItem);
+// Categories
+router.get("/categories", cCategory.get_categories);
+router.get("/categories/:categoryId", cCategory.get_category);
+router.get("/categories/:categoryId/delete", cCategory.get_deleteCategory);
 
 module.exports = router;
