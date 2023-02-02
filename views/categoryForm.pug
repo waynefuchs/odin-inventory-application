@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1 #{title}
+    nav
+      a(href="/") Home
+      a(href="/categories") Back
+
+  if errors
+    ul.error
+      for error in errors
+        li!= error.msg
+
+  form(method="post", action="" autocomplete="off")
+    div.input
+      label(for="name") Category Name
+      input(type="text", name="name", id="name", placeholder="Category Name", maxlength=60, required=true, value=category.name)
+
+    div.input
+      label(for="description") Description
+      input(type="text", name="description", id="description", placeholder="Category Description", maxlength=60, required=true, value=category.description)
+
+    div.input
+      button= buttonText

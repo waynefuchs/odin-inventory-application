@@ -12,7 +12,7 @@ block content
         a(href=item.url) #{item.name}
       div.item #{item.description}
       div.item #{item.category}
-      div.item #{item.price}
-      div.item Quantity: #{item.available}
+      div.item #{item.priceUSD}
 
-      a.button(href=item.urlDelete) Delete
+      a(href=item.urlEdit) Edit
+      a(href=item.urlDelete) Delete

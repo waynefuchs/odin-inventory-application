@@ -11,7 +11,7 @@ block content
       for error in errors
         li!= error.msg
 
-  form(method="post", action="")
+  form(method="post", action="" autocomplete="off")
     div.input
       label(for="name") Item Name
       input(type="text", name="name", id="name", placeholder="Item Name", maxlength=60, required=true, value=undefined===item ? '' : item.name)
@@ -39,4 +39,4 @@ block content
       input(type="number" name="available" placeholder="0" min="0" max="9999", maxlength=4, required=true, value=undefined===item ? '' : item.available)
 
     div.input
-      button Add Item
+      button= buttonText

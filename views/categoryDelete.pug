@@ -1,12 +1,7 @@
 extends layout
 
 block content
-  h1= title
-    nav
-      a(href="/categories") Back
-
-  p #{category.name}
-  p #{category.description}
+  include category
 
   h2 Are you sure you want to delete this category?
 

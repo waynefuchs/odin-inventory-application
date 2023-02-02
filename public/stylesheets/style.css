@@ -84,7 +84,7 @@ ul.error {
 
 .items {
   display: grid;
-  grid-template-columns: 3fr 6fr 2fr 1fr 2fr 1fr;
+  grid-template-columns: 3fr 6fr 2fr 1fr 2fr 1fr 1fr;
   justify-items: start;
   margin-top: 1rem;
 }
@@ -93,8 +93,4 @@ ul.error {
   display: flex;
   gap: 3rem;
   margin-top: 1rem;
-}
-
-.category {
-  min-width: 50%;
 }

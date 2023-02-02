@@ -4,58 +4,64 @@ const { body, validationResult } = require("express-validator");
 const Category = require("../models/category.model");
 const Item = require("../models/item.model");
 
-exports.get_itemNewForm = (req, res, next) => {
+function validateItem() {
+  return [
+    body("name")
+      .trim()
+      .isLength({ min: 1, max: 60 })
+      .escape()
+      .withMessage("Item name is required"),
+    body("description")
+      .trim()
+      .isLength({ min: 1, max: 60 })
+      .escape()
+      .withMessage("Description is required"),
+    body("category")
+      .trim()
+      .isLength({ min: 1, max: 60 })
+      .escape()
+      .withMessage("Category is required"),
+    body("price")
+      .trim()
+      .isLength({ min: 1, max: 10 })
+      .escape()
+      .withMessage("Price is required")
+      .isNumeric()
+      .withMessage("Price must be a a dollar amount"),
+    body("available").trim().isLength({ min: 1, max: 4 }),
+  ];
+}
+
+exports.get_itemNew = (req, res, next) => {
   // Find Category list for drop down (select)
   async.parallel(
     {
       categories(callback) {
-        Category.find({}, callback);
+        Category.find({}, callback).sort({ name: "asc" });
       },
     },
-
-    // Render page
     (err, results) => {
       if (err) return next(err);
-      res.render("itemNewForm", {
+      const itemData = {
+        name: "",
+        description: "",
+        category: "",
+        price: "",
+        available: "",
+      };
+      res.render("itemForm", {
         title: "New Item",
+        item: itemData,
         categories: results.categories,
+        buttonText: "Add Item",
+        errors: null,
       });
     }
   );
 };
 
-const alphaErrorMessage = "Only A-Z, Space, and Dash characters are allowed";
-exports.post_itemNewForm = [
-  // Generate an array with all the form data in it
-  body("name")
-    .trim()
-    .isLength({ min: 1, max: 60 })
-    .escape()
-    .withMessage("Item name is required")
-    .isAlpha("en-US", { ignore: " -" })
-    .withMessage(`${alphaErrorMessage} in the item name`),
-  body("description")
-    .trim()
-    .isLength({ min: 1, max: 60 })
-    .escape()
-    .withMessage("Description is required")
-    .isAlpha("en-US", { ignore: " -" })
-    .withMessage(`${alphaErrorMessage} in the description`),
-  body("category")
-    .trim()
-    .isLength({ min: 1, max: 60 })
-    .escape()
-    .withMessage("Category is required"),
-  body("price")
-    .trim()
-    .isLength({ min: 1, max: 10 })
-    .escape()
-    .withMessage("Price is required")
-    .isNumeric()
-    .withMessage("Price must be a a dollar amount"),
-  body("available").trim().isLength({ min: 1, max: 4 }),
-
-  // And execute this function at the end
+exports.post_itemNew = [
+  ...validateItem(),
   (req, res, next) => {
     // Run form validation
     const errors = validationResult(req);
@@ -75,17 +81,18 @@ exports.post_itemNewForm = [
       async.parallel(
         {
           categories(callback) {
-            Category.find({}, callback);
+            Category.find({}, callback).sort({ name: "asc" });
           },
         },
 
         (err, results) => {
           // reload form and show the first error
           if (err) return next(err);
-          res.render("itemNewForm", {
+          res.render("itemForm", {
             title: "New Item",
             item: itemData,
             categories: results.categories,
+            buttonText: "Add Item",
             errors: errors.array(),
           });
         }
@@ -106,7 +113,7 @@ exports.get_items = (req, res, next) => {
   async.parallel(
     {
       items(callback) {
-        Item.find({}, callback);
+        Item.find({}, callback).sort({ name: "asc" });
       },
     },
     (err, results) => {
@@ -178,3 +185,68 @@ exports.post_itemDelete = (req, res, next) => {
     }
   );
 };
+
+exports.get_itemEdit = (req, res, next) => {
+  async.parallel(
+    {
+      item(callback) {
+        Item.findById(req.params.itemId, callback);
+      },
+      categories(callback) {
+        Category.find({}, callback).sort({ name: "asc" });
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      res.render("itemForm", {
+        title: "Update Item",
+        item: results.item,
+        categories: results.categories,
+        buttonText: "Update Item",
+        errors: null,
+      });
+    }
+  );
+};
+
+exports.post_itemEdit = [
+  ...validateItem(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const itemData = {
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      available: req.body.available,
+    };
+
+    // Check for error
+    if (!errors.isEmpty()) {
+      async.parallel(
+        {
+          categories(callback) {
+            Category.find({}, callback).sort({ name: "asc" });
+          },
+        },
+        (err, results) => {
+          if (err) return next(err);
+          res.render("itemForm", {
+            title: "Update Item",
+            item: itemData,
+            categories: results.categories,
+            buttonText: "Update Item",
+            errors: errors.array(),
+          });
+        }
+      );
+      return;
+    }
+
+    // Update and redirect
+    Item.findByIdAndUpdate(req.params.itemId, itemData, {}, (err, item) => {
+      if (err) return next(err);
+      res.redirect(item.url);
+    });
+  },
+];

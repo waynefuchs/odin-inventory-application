@@ -4,6 +4,21 @@ const { body, validationResult } = require("express-validator");
 const Category = require("../models/category.model");
 const Item = require("../models/item.model");
 
+function validateCategory() {
+  return [
+    body("name")
+      .trim()
+      .isLength({ min: 1, max: 60 })
+      .escape()
+      .withMessage("Category Name is required"),
+    body("description")
+      .trim()
+      .isLength({ min: 1, max: 60 })
+      .escape()
+      .withMessage("Category Description is required"),
+  ];
+}
+
 exports.get_categories = (req, res, next) => {
   async.parallel(
     {
@@ -40,6 +55,106 @@ exports.get_category = (req, res, next) => {
   );
 };
 
+exports.get_categoryEdit = (req, res, next) => {
+  async.parallel(
+    {
+      category(callback) {
+        Category.findById(req.params.categoryId, callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      res.render("categoryForm", {
+        title: "Edit Category",
+        category: results.category,
+        buttonText: "Update Category",
+        errors: null,
+      });
+    }
+  );
+};
+
+exports.post_categoryEdit = [
+  ...validateCategory(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const categoryData = {
+      name: req.body.name,
+      description: req.body.description,
+    };
+
+    // Check for validation errors
+    if (!errors.isEmpty()) {
+      res.render("categoryForm", {
+        title: "Edit Category",
+        category: categoryData,
+        buttonText: "Update Category",
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    // Data is valid, update
+    Category.findByIdAndUpdate(
+      // id
+      req.params.categoryId,
+      // data
+      categoryData,
+      // options
+      {},
+      // callback
+      (err, category) => {
+        if (err) return next(err);
+        res.redirect(category.url);
+      }
+    );
+  },
+];
+
+exports.get_categoryNew = (req, res, next) => {
+  res.render("categoryForm", {
+    title: "New Category",
+    category: {
+      name: "",
+      description: "",
+    },
+    buttonText: "Add Category",
+    errors: null,
+  });
+};
+
+exports.post_categoryNew = [
+  ...validateCategory(),
+  (req, res, next) => {
+    // Run form validation
+    const errors = validationResult(req);
+
+    // build data object with form data
+    const categoryData = {
+      name: req.body.name,
+      description: req.body.description,
+    };
+
+    // Check for form validation errors
+    if (!errors.isEmpty()) {
+      res.render("categoryForm", {
+        title: "New Category",
+        category: categoryData,
+        buttonText: "Add Category",
+        errors: errors.array(),
+      });
+      return next();
+    }
+
+    // Form data is valid
+    const category = new Category(categoryData);
+    category.save((err) => {
+      if (err) return next(err);
+      res.redirect(category.url);
+    });
+  },
+];
+
 exports.get_categoryDelete = (req, res, next) => {
   async.parallel(
     {
@@ -57,61 +172,6 @@ exports.get_categoryDelete = (req, res, next) => {
     }
   );
 };
-
-exports.get_categoryNewForm = (req, res, next) => {
-  res.render("categoryNewForm", {
-    title: "New Category",
-  });
-};
-
-const alphaErrorMessage = "Only A-Z, Space, and Dash characters are allowed";
-exports.post_categoryNewForm = [
-  // Generate an array with all the form data in it
-  body("name")
-    .trim()
-    .isLength({ min: 1, max: 60 })
-    .escape()
-    .withMessage("Item name is required")
-    .isAlpha("en-US", { ignore: " -" })
-    .withMessage(`${alphaErrorMessage} in the category name`),
-  // Generate an array with all the form data in it
-  body("description")
-    .trim()
-    .isLength({ min: 1, max: 60 })
-    .escape()
-    .withMessage("Item name is required")
-    .isAlpha("en-US", { ignore: " -" })
-    .withMessage(`${alphaErrorMessage} in the category description`),
-
-  // And execute this function at the end of validation
-  (req, res, next) => {
-    // Run form validation
-    const errors = validationResult(req);
-
-    // build data object with form data
-    const categoryData = {
-      name: req.body.name,
-      description: req.body.description,
-    };
-
-    // Check for form validation errors
-    if (!errors.isEmpty()) {
-      res.render("categoryNewForm", {
-        title: "New Category",
-        category: categoryData,
-        errors: errors.array(),
-      });
-      return next();
-    }
-
-    // Form data is valid
-    const category = new Category(categoryData);
-    category.save((err) => {
-      if (err) return next(err);
-      res.redirect(category.url);
-    });
-  },
-];
 
 exports.post_categoryDelete = (req, res, next) => {
   async.parallel(

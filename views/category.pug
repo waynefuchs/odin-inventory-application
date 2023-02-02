@@ -3,11 +3,15 @@ extends layout
 block content
   h1= title
     nav
+      a(href="/") Home
       a(href="/categories") Back
 
   if message
     div.error= message
 
-  p #{category.name}
-  p #{category.description}
-  a(href=category.urlDelete) Delete
+  h6 TODO: Make this a card
+  div
+    p #{category.name}
+    p #{category.description}
+    a(href=category.urlDelete) Delete
+    a(href=category.urlEdit) Edit
