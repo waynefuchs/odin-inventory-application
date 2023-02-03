@@ -11,12 +11,14 @@ module.exports = () => {
       // pass: process.env.DB_PASS,
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
-      connectTimeoutMS: 500,
+      serverSelectionTimeoutMS: 500, // This is the connection timeout setting
     })
     .then(() => {
       console.log("Mongodb connected....");
     })
-    .catch((err) => console.log(err.message));
+    .catch((err) => {
+      console.log(`mongoose.connect error: ${err.message}`);
+    });
 
   // mongoose.connection.on("connected", () => {
   //   console.log("Mongoose connected to db...");
@@ -27,7 +29,7 @@ module.exports = () => {
   });
 
   mongoose.connection.on("error", (err) => {
-    console.error(err.message);
+    console.error(`mongoose.connection.on: ${err.message}`);
   });
 
   mongoose.connection.on("disconnected", () => {
