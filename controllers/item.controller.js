@@ -63,6 +63,16 @@ exports.get_itemNew = (req, res, next) => {
 exports.post_itemNew = [
   ...validateItem(),
   (req, res, next) => {
+    res.send("FIXING");
+
+    const multer = require("multer");
+    const upload = multer({ dest: "uploads/", filename: "abcd" });
+    upload.single("image");
+
+    console.dir(req.file);
+    req.file.filename = "abd";
+    return;
+
     // Run form validation
     const errors = validationResult(req);
 
