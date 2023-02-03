@@ -43,11 +43,4 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-app.use(function(err, req, res, next) {
-  if(err) {
-    console.log("error. balalldsfjaksldfjlsa")
-  }
-  console.log("NORR")
-});
-
 module.exports = app;
