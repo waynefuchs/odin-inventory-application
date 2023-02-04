@@ -7,6 +7,10 @@ block content
       a(href="/items") Back
 
   h6 TODO: Make this a card
+
+  - image = item.image
+  if image
+    img(src=image)
   p #{item.name}
   p #{item.description}
   p #{item.category}

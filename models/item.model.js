@@ -30,4 +30,15 @@ ItemSchema.virtual("priceUSD").get(function () {
   return USDollar.format(this.price);
 });
 
+ItemSchema.virtual("image").get(function () {
+  const fs = require("fs");
+  const filename = `items/${this._id}.png`;
+  console.log(filename);
+  const returnValue = fs.existsSync(`public/${filename}`)
+    ? `/${filename}`
+    : null;
+  console.log(`Returning: ${returnValue} (public/${filename})`);
+  return returnValue;
+});
+
 module.exports = mongoose.model("Item", ItemSchema);

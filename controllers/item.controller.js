@@ -9,22 +9,18 @@ function validateItem() {
     body("name")
       .trim()
       .isLength({ min: 1, max: 60 })
-      .escape()
       .withMessage("Item name is required"),
     body("description")
       .trim()
       .isLength({ min: 1, max: 60 })
-      .escape()
       .withMessage("Description is required"),
     body("category")
       .trim()
       .isLength({ min: 1, max: 60 })
-      .escape()
       .withMessage("Category is required"),
     body("price")
       .trim()
       .isLength({ min: 1, max: 10 })
-      .escape()
       .withMessage("Price is required")
       .isNumeric()
       .withMessage("Price must be a a dollar amount"),
@@ -63,16 +59,6 @@ exports.get_itemNew = (req, res, next) => {
 exports.post_itemNew = [
   ...validateItem(),
   (req, res, next) => {
-    res.send("FIXING");
-
-    const multer = require("multer");
-    const upload = multer({ dest: "uploads/", filename: "abcd" });
-    upload.single("image");
-
-    console.dir(req.file);
-    req.file.filename = "abd";
-    return;
-
     // Run form validation
     const errors = validationResult(req);
 
@@ -114,10 +100,42 @@ exports.post_itemNew = [
     const item = new Item(itemData);
     item.save((err) => {
       if (err) return next(err);
-      res.redirect(item.url);
+      req.item = item;
+      return next();
     });
   },
 ];
+
+exports.rename_uploaded_file = (req, res, next) => {
+  if (!req.item) throw new Error("Failed to rename item");
+
+  const fs = require("fs");
+  // Rename the file that 'multer' randomly named
+  console.dir(req.file);
+  console.log(`req.file.path: ${req.file.path}`);
+  console.log(`req.file.destination: ${req.file.destination}`);
+  console.log(`req.item._id: ${req.item._id}`);
+
+  fs.rename(
+    req.file.path,
+    `${req.file.destination}${req.item._id}.png`,
+    (err) => {
+      if (err) return next(err);
+      return next();
+    }
+  );
+};
+
+exports.redirect_to_item = (req, res, next) => {
+  if (!req.item) throw new Error("Failed to redirect");
+  res.redirect(req.item.url);
+  return;
+};
+
+exports.redir = (req, res, next) => {
+  if (!req.item || !req.item.url) throw new Error("Failed to redirect to item");
+  res.redirect(req.item.url);
+};
 
 exports.get_items = (req, res, next) => {
   async.parallel(
@@ -146,10 +164,7 @@ exports.get_item = (req, res, next) => {
       },
     },
     (err, results) => {
-      if (err) {
-        console.dir(item);
-        return next(err);
-      }
+      if (err) return next(err);
       res.render("item", {
         title: `Item`,
         item: results.item,
@@ -179,7 +194,6 @@ exports.get_itemDelete = (req, res, next) => {
 };
 
 exports.post_itemDelete = (req, res, next) => {
-  console.log(req.params.itemId);
   async.parallel(
     {
       item(callback) {
@@ -188,8 +202,16 @@ exports.post_itemDelete = (req, res, next) => {
     },
     (err, results) => {
       if (err) return next(err);
+      const filename = results.item.image;
+
       Item.findByIdAndDelete(req.params.itemId, (err) => {
         if (err) return next(err);
+        if (filename) {
+          const fs = require("fs");
+          fs.rmSync(filename, (err) => {
+            if (err) return next(err);
+          });
+        }
         res.redirect("/items");
       });
     }
@@ -256,7 +278,8 @@ exports.post_itemEdit = [
     // Update and redirect
     Item.findByIdAndUpdate(req.params.itemId, itemData, {}, (err, item) => {
       if (err) return next(err);
-      res.redirect(item.url);
+      req.item = item;
+      return next();
     });
   },
 ];

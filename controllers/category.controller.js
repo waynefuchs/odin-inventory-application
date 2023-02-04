@@ -9,12 +9,10 @@ function validateCategory() {
     body("name")
       .trim()
       .isLength({ min: 1, max: 60 })
-      .escape()
       .withMessage("Category Name is required"),
     body("description")
       .trim()
       .isLength({ min: 1, max: 60 })
-      .escape()
       .withMessage("Category Description is required"),
   ];
 }
