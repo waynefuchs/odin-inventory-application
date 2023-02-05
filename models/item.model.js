@@ -14,6 +14,10 @@ const ItemSchema = new Schema({
   available: { type: Number, required: true },
 });
 
+ItemSchema.virtual("lowerName").get(function () {
+  return this.name.toLocaleLowerCase();
+});
+
 ItemSchema.virtual("url").get(function () {
   return `/items/${this._id}`;
 });

@@ -115,12 +115,39 @@ function createCategories(cb) {
         );
       },
       function (callback) {
+        categoryCreate(
+          "Creator 3-in-1",
+          "Vehicles, animals, and play sets",
+          callback
+        );
+      },
+      function (callback) {
         categoryCreate("Duplo", "LEGO for your baby", callback);
+      },
+      function (callback) {
+        categoryCreate("NINJAGO", "The thrilling world of Ninjas", callback);
       },
       function (callback) {
         categoryCreate(
           "Friends",
           "Sets for kids to tell stories, work on interpersonal skills, and celebrate friendship",
+          callback
+        );
+      },
+      function (callback) {
+        categoryCreate(
+          "Holiday",
+          "Special Christmas, Valentines, Easter, Thanksgiving, and Halloween sets",
+          callback
+        );
+      },
+      function (callback) {
+        categoryCreate("Jurassic World", "Dinosaur Adventures", callback);
+      },
+      function (callback) {
+        categoryCreate(
+          "Minecraft",
+          "For when you want to play video games, but you don't have a computer",
           callback
         );
       },
@@ -131,17 +158,6 @@ function createCategories(cb) {
     cb
   );
 }
-
-// function (callback) {
-//   itemCreate(
-//     "",
-//     "",
-//     "",
-//     ,
-//     ,
-//     callback
-//   );
-// },
 
 const filenames = {
   Bunny: "bunny.png",
@@ -184,6 +200,126 @@ function createItems(next) {
           1,
           callback
         );
+      },
+
+      function (callback) {
+        itemCreate("Lizard", "A chameleon", "Friends", 0.95, 3, callback);
+      },
+      function (callback) {
+        itemCreate(
+          "Princess",
+          "A very rare princess",
+          "Friends",
+          19.99,
+          1,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Sword",
+          "Careful, the pointy end is sharp",
+          "Creator 3-in-1",
+          0.49,
+          47,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Monkey",
+          "A little monkey, jumping on the bed",
+          "Creator 3-in-1",
+          0.99,
+          10,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Santa Claus",
+          "Figure represents the real Santa on December 24",
+          "Holiday",
+          1,
+          5.99,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Lifeguard",
+          "This one, unfortunately, cannot save you",
+          "Friends",
+          5,
+          8.15,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Crab",
+          "Where are it's eyes? Shhh...",
+          "Classic",
+          5,
+          8.99,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Ninja",
+          "It's hard to see in the dark, mistakes were made",
+          "NINJAGO",
+          3,
+          1.23,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Spaceship",
+          "A mini.. Centennial? No. Millennial? Not quite.. Millennium.. Yes. Eagle. No. Hawk. No. Millennium Falcon. Yeah, that's the one.",
+          "Star Wars",
+          1,
+          649.99,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Dinosaur",
+          "It's a bird, not a lizard",
+          "Jurassic World",
+          1003,
+          0.25,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate(
+          "Fire Kitty",
+          "Is it a dragon? Is it a cat!? Why not both!!!",
+          "Classic",
+          3,
+          5.99,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate("Pony", "It's pretty short", "Friends", 4, 14.34, callback);
+      },
+      function (callback) {
+        itemCreate(
+          "Spider",
+          "For some reason we made this",
+          "Friends",
+          9001,
+          0.01,
+          callback
+        );
+      },
+      function (callback) {
+        itemCreate("Zombie", "So scary", "Minecraft", 1, 19.42, callback);
       },
     ],
     next

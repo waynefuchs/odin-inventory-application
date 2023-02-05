@@ -11,6 +11,7 @@
 body {
   padding: 50px;
   font: 14px "ScopeOne", serif;
+  background: #333333;
 }
 
 nav {
@@ -82,15 +83,57 @@ ul.error {
   border-radius: 0.5rem;
 }
 
-.items {
-  display: grid;
-  grid-template-columns: 3fr 6fr 2fr 1fr 2fr 1fr 1fr;
-  justify-items: start;
-  margin-top: 1rem;
-}
-
 .category-card {
   display: flex;
   gap: 3rem;
   margin-top: 1rem;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+
+  /* display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem; */
+}
+
+.item-card {
+  background: #aaaaaa;
+
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 1);
+  transition: 0.3s;
+  border-radius: 1rem;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+/* 
+.item-card-image {
+  min-width: 250px;
+  width: 250px;
+  text-align: center;
+} */
+
+.item-card-image {
+  justify-self: center;
+  align-self: center;
+}
+
+.item-card-content {
+  padding-left: 1rem;
+}
+
+.item-card-image > img {
+  max-width: 250px;
+  max-height: 150px;
+}
+
+.item-card-content > h1 {
+  padding: 0;
+  margin: 0;
 }

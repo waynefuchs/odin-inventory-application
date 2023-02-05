@@ -50,6 +50,8 @@ exports.get_itemNew = (req, res, next) => {
         item: itemData,
         categories: results.categories,
         buttonText: "Add Item",
+        // Require an image to be uploaded with the item
+        imageRequired: true,
         errors: null,
       });
     }
@@ -71,9 +73,10 @@ exports.post_itemNew = [
       available: req.body.available,
     };
 
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty() || !req.file) {
       // Errors in the form data were found
       // Re-render the form
+      // (!req.file): For a new item, a file must be uploaded
       async.parallel(
         {
           categories(callback) {
@@ -82,6 +85,19 @@ exports.post_itemNew = [
         },
 
         (err, results) => {
+          const errorArray = [
+            ...errors.array(),
+            ...(!req.file
+              ? [
+                  {
+                    msg: "An image file must be supplied for all new inventory items",
+                  },
+                ]
+              : []),
+          ];
+          console.dir(errorArray);
+
+          console.log("What");
           // reload form and show the first error
           if (err) return next(err);
           res.render("itemForm", {
@@ -89,7 +105,8 @@ exports.post_itemNew = [
             item: itemData,
             categories: results.categories,
             buttonText: "Add Item",
-            errors: errors.array(),
+            imageRequired: true,
+            errors: errorArray,
           });
         }
       );
@@ -107,9 +124,21 @@ exports.post_itemNew = [
 ];
 
 exports.rename_uploaded_file = (req, res, next) => {
-  if (!req.item) throw new Error("Failed to rename item");
-
   const fs = require("fs");
+  if (!req.file) {
+    // No file uploaded
+    return next();
+    throw new Error("Failed to rename item, no file uploaded");
+  }
+  if (!req.item) {
+    // No item was created (I don't have an item._id to name the file with)
+    // But I do have a file... Clean up the file
+    fs.rmSync(req.file.path);
+    delete req.file;
+    return next();
+    throw new Error("Failed to rename item, no item found");
+  }
+
   // Rename the file that 'multer' randomly named
   console.dir(req.file);
   console.log(`req.file.path: ${req.file.path}`);
@@ -145,6 +174,7 @@ exports.get_items = (req, res, next) => {
       },
     },
     (err, results) => {
+      console.dir(results.items);
       if (err) return next(err);
       res.render("items", {
         title: "Items",
@@ -178,7 +208,6 @@ exports.get_itemDelete = (req, res, next) => {
   async.parallel(
     {
       item(callback) {
-        // if (!req.params.itemId) return next();
         Item.findById(req.params.itemId, callback);
       },
     },
@@ -202,13 +231,14 @@ exports.post_itemDelete = (req, res, next) => {
     },
     (err, results) => {
       if (err) return next(err);
-      const filename = results.item.image;
+      const filename = results.item ? `public${results.item.image}` : null;
+      console.log(filename);
 
       Item.findByIdAndDelete(req.params.itemId, (err) => {
         if (err) return next(err);
         if (filename) {
           const fs = require("fs");
-          fs.rmSync(filename, (err) => {
+          fs.rmSync(filename, {}, (err) => {
             if (err) return next(err);
           });
         }
@@ -235,6 +265,8 @@ exports.get_itemEdit = (req, res, next) => {
         item: results.item,
         categories: results.categories,
         buttonText: "Update Item",
+        // Do not require the image when editing
+        imageRequired: false,
         errors: null,
       });
     }
@@ -268,6 +300,7 @@ exports.post_itemEdit = [
             item: itemData,
             categories: results.categories,
             buttonText: "Update Item",
+            imageRequired: false,
             errors: errors.array(),
           });
         }

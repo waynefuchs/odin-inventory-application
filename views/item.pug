@@ -8,14 +8,5 @@ block content
 
   h6 TODO: Make this a card
 
-  - image = item.image
-  if image
-    img(src=image)
-  p #{item.name}
-  p #{item.description}
-  p #{item.category}
-  p $#{item.price}
-  p Quantity: #{item.available}
-
-  a(href=item.urlEdit) Edit
-  a(href=item.urlDelete) Delete
+  div.items
+    include itemCard

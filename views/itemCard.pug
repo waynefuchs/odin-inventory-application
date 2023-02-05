@@ -1,0 +1,16 @@
+- image = item.image
+
+div.item-card
+  if image
+    div.item-card-image
+      img(src=image)
+
+  div.item-card-content
+    h1 #{item.name}
+    p #{item.description}
+    p #{item.category}
+    p $#{item.price}
+    p Quantity: #{item.available}
+
+    a(href=item.urlEdit) Edit
+    a(href=item.urlDelete) Delete

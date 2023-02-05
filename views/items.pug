@@ -6,13 +6,6 @@ block content
       a.button(href="/") Home
       a.button(href="/items/new") New
 
-  each item in items
-    div.items
-      div.item 
-        a(href=item.url) #{item.name}
-      div.item #{item.description}
-      div.item #{item.category}
-      div.item #{item.priceUSD}
-
-      a(href=item.urlEdit) Edit
-      a(href=item.urlDelete) Delete
+  div.items
+    each item in items
+      include itemCard
